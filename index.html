@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Node.js File Operations</title>
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&family=Lobster&display=swap" rel="stylesheet">
+  <style>
+    /* Dark background image and stylish font settings */
+    body {
+      font-family: 'Roboto', sans-serif;
+      background-image: url('https://images.unsplash.com/photo-1506748686214-e9df14d4d9d0');
+      background-size: cover;
+      background-position: center;
+      color: #d4d4dc;
+      text-align: center;
+      padding: 50px;
+      margin: 0;
+    }
+    h1 {
+      font-family: 'Lobster', cursive;
+      color: #e6e6fa; /* Light lavender for a soft contrast */
+      font-size: 3em;
+      margin-bottom: 20px;
+      text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.8);
+    }
+    input[type="text"] {
+      padding: 12px;
+      width: 60%;
+      border: 1px solid #bbb;
+      border-radius: 8px;
+      font-size: 1em;
+      margin-top: 20px;
+      color: #333;
+      background-color: #f9f9f9;
+    }
+    button {
+      padding: 12px 20px;
+      color: #333;
+      background-color: #e6e6fa;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: bold;
+      font-size: 1em;
+      margin: 10px;
+      transition: background-color 0.3s, transform 0.2s;
+    }
+    button:hover {
+      background-color: #d4d4dc; /* Softer color for hover */
+      transform: scale(1.05);
+    }
+    .message {
+      margin-top: 20px;
+      font-size: 1.2em;
+      color: #b0c4de; /* Light steel blue for a softer tone */
+      text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.8);
+    }
+    #fileContent {
+      font-size: 1.1em;
+      font-style: italic;
+      color: #e6e6fa;
+      margin-top: 20px;
+      text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.7);
+    }
+  </style>
+</head>
+<body>
+  <h1>Node.js File Operations</h1>
+  <form id="writeForm">
+    <input type="text" id="content" placeholder="Enter text to write" required>
+    <button type="submit">Save Content</button>
+  </form>
+  <div class="message" id="responseMessage"></div>
+
+  <button onclick="readContent()">Read File Content</button>
+  <button onclick="deleteContent()">Delete File Content</button>
+  
+  <div class="message" id="fileContent"></div>
+
+  <script>
+    // Handle form submission to write content
+    document.getElementById('writeForm').addEventListener('submit', async function(event) {
+      event.preventDefault();
+      const content = document.getElementById('content').value;
+      const response = await fetch('/write', {
+        method: 'POST',
+        body: content,
+        headers: { 'Content-Type': 'text/plain' }
+      });
+      const result = await response.json();
+      document.getElementById('responseMessage').textContent = result.message;
+    });
+
+    // Function to read content from file
+    async function readContent() {
+      const response = await fetch('/read');
+      const result = await response.json();
+      document.getElementById('fileContent').textContent = result.data;
+    }
+
+    // Function to delete content from file
+    async function deleteContent() {
+      const response = await fetch('/delete', {
+        method: 'DELETE'
+      });
+      const result = await response.json();
+      document.getElementById('responseMessage').textContent = result.message;
+      document.getElementById('fileContent').textContent = ''; // Clear displayed file content
+    }
+  </script>
+</body>
+</html>
